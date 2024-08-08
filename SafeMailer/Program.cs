@@ -1,4 +1,6 @@
-﻿namespace SafeMailer;
+﻿using System.Xml;
+
+namespace SafeMailer;
 
 class Program
 {
@@ -61,7 +63,8 @@ public class SendGridEmailService : IEmailService
     public async Task<bool> SendEmail(string to, string subject, string body)
     {
         await Task.Delay(5000);
-        return true;
+        Console.WriteLine("Email sent to SendGrid");
+        return false;
     }
 }
 
@@ -70,6 +73,7 @@ public class GmailEmailService : IEmailService
     public async Task<bool> SendEmail(string to, string subject, string body)
     {
         await Task.Delay(5000);
+        Console.WriteLine("Email sent to Gmail");
         return true;
     }
 }
@@ -79,6 +83,7 @@ public class YahooEmailService : IEmailService
     public async Task<bool> SendEmail(string to, string subject, string body)
     {
         await Task.Delay(5000);
+        Console.WriteLine("Email sent to Yahoo");
         return true;
     }
 }
