@@ -26,7 +26,6 @@ public interface IEmailService
 public class EmailServiceManager
 {
     private readonly List<IEmailService> services;
-    private readonly int _maxRetries = 3;
 
     public EmailServiceManager(List<IEmailService> services)
     {
