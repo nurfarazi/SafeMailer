@@ -26,22 +26,21 @@ public interface IEmailService
 public class EmailServiceManager
 {
     private readonly List<IEmailService> services;
+    private readonly int _maxRetries = 3;
 
     public EmailServiceManager(List<IEmailService> services)
     {
         this.services = services;
     }
 
-    public async Task<bool> SendEmail(string to, string subject, string body)
+    public async Task SendEmail(string to, string subject, string body)
     {
         foreach (var service in services)
         {
             var result = await TrySendEmail(service, to, subject, body);
 
-            if (result) return true;
+            if (result) return;
         }
-
-        return false;
     }
 
     private async Task<bool> TrySendEmail(IEmailService service, string to, string subject, string body)
@@ -49,9 +48,18 @@ public class EmailServiceManager
         var retries = 3;
         while (retries-- > 0)
         {
-            var result = await service.SendEmail(to, subject, body);
+            try
+            {
+                var result = await service.SendEmail(to, subject, body);
 
-            if (result) return true;
+                if (result) return true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error sending email with {service.GetType().Name}. Retries left: {retries}");
+            }
+        
         }
 
         return false;
