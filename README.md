@@ -30,6 +30,15 @@ Monitoring systems should be in place to alert on repeated failures or degraded 
 
 Use a configuration system to manage the list of services and their priorities, retry limits, and other operational parameters.
 
+### System Design and Architecture
+
+This implementation organizes email delivery into a resilient, extensible pipeline:
+- A single `EmailServiceManager` orchestrates sending, retries, and fallbacks.
+- Each provider (SendGrid, Gmail, Yahoo) implements the common `IEmailService` strategy.
+- On send failures, the manager retries up to a configurable count before switching to the next provider.
+- Logging at each step gives visibility into retries, failures, and service switches.
+- All services and retry parameters are supplied via constructor (dependency injection), allowing easy reconfiguration or extension.
+
 ### Design Patterns and OOP Principles Used
 
 **Strategy Pattern**:

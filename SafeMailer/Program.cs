@@ -32,16 +32,6 @@ public class EmailServiceManager
         this.services = services;
     }
 
-    public async Task SendEmail(string to, string subject, string body)
-    {
-        foreach (var service in services)
-        {
-            var result = await TrySendEmail(service, to, subject, body);
-
-            if (result) return;
-        }
-    }
-
     private async Task<bool> TrySendEmail(IEmailService service, string to, string subject, string body)
     {
         var retries = 3;
@@ -58,10 +48,20 @@ public class EmailServiceManager
             {
                 Console.WriteLine($"Error sending email with {service.GetType().Name}. Retries left: {retries}");
             }
-        
+
         }
 
         return false;
+    }
+    
+    public async Task SendEmail(string to, string subject, string body)
+    {
+        foreach (var service in services)
+        {
+            var result = await TrySendEmail(service, to, subject, body);
+
+            if (result) return;
+        }
     }
 }
 
